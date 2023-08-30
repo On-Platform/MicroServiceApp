@@ -5,7 +5,7 @@ using SampleApp.UserService.Services;
 namespace SampleApp.UserService.Controllers;
 
 [ApiController]
-// [Authorize]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
