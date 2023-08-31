@@ -19,10 +19,12 @@ public class RegistrationController : ControllerBase
         _messageSender = messageSender;
         _userManager = userManager;
     }
+    
     [HttpPost(Name = "AddUser")]
     public async Task Add([FromBody] UserDto userDto)
     {
         var user = _mapper.Map<ApplicationUser>(userDto);
+        user.Id = Guid.NewGuid();
         var identityUser = await _userManager.CreateAsync(user);
         if(identityUser.Succeeded)
         {
