@@ -24,12 +24,12 @@ public class UserDbContext: DbContext
                 _httpContextAccessor = this.GetService<IHttpContextAccessor>();
                 _user = _httpContextAccessor.HttpContext?.User;
             }
-            if (_user.Identity is { IsAuthenticated: false })
+            if (_user?.Identity is { IsAuthenticated: false })
             {
                 return null;
             }
 
-            var value = _user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var value = _user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (value != null)
                 return Guid.Parse(value);
             return null;
