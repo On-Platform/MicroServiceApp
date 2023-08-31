@@ -1,5 +1,10 @@
 trigger:
-- main
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - MicroServiceApp.IdentityServer
 
 pool:
   vmImage: 'windows-latest'
