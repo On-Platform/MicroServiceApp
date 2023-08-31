@@ -52,6 +52,11 @@ app.Services.GetService<IServiceBusProcessor<UserRegisteredMessage>>()?.StartAsy
     }
 });
 
+using (var serviceScope = app.Services.GetService<IServiceScopeFactory>()?.CreateScope())
+{
+    serviceScope?.ServiceProvider.GetRequiredService<UserDbContext>().Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
