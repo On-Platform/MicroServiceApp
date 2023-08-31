@@ -10,8 +10,6 @@ variables:
   buildConfiguration: 'Release'
   authProjectPath: '**/MicroService.IdentityServer/*.csproj'
 
-name: $(major).$(minor).$(patch)
-
 steps:
 - task: UseDotNet@2
   displayName: 'Install .NET Core SDK'
