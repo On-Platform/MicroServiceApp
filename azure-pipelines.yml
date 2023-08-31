@@ -24,7 +24,7 @@ steps:
     restoreSolution: '$(solution)'
 
 - task: DotNetCoreCLI@2
-  displayName: 'OnPlatfor.Net.Auth'
+  displayName: 'MicroService.IdentityServer'
   inputs:
     command: 'pack'
     configuration: $(configuration)
