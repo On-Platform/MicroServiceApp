@@ -8,7 +8,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  authProjectPath: '**/MicroService.IdentityServer/*.csproj'
+  authProjectPath: '**/MicroServiceApp.IdentityServer/*.csproj'
 
 steps:
 - task: UseDotNet@2
@@ -24,7 +24,7 @@ steps:
     restoreSolution : $(authProjectPath)
 
 - task: DotNetCoreCLI@2
-  displayName: 'MicroService.IdentityServer'
+  displayName: 'MicroServiceApp.IdentityServer'
   inputs:
     command: 'pack'
     configuration: $(configuration)
