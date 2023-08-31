@@ -23,12 +23,13 @@ steps:
   inputs:
     restoreSolution : $(authProjectPath)
 
-- task: DotNetCoreCLI@2
-  displayName: 'MicroServiceApp.IdentityServer'
+- task: VSBuild@1
   inputs:
-    command: 'pack'
-    configuration: $(configuration)
-    packagesToPack: $(authProjectPath)
+    solution: '$(authProjectPath)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
 - task: PublishBuildArtifacts@1
   displayName: 'Publish the package to artifacts directory'
   inputs:
