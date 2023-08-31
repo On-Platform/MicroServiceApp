@@ -21,7 +21,7 @@ steps:
 
 - task: NuGetCommand@2
   inputs:
-    restoreDirectory : $(authProjectPath)
+    restoreSolution : $(authProjectPath)
 
 - task: DotNetCoreCLI@2
   displayName: 'MicroService.IdentityServer'
