@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MicroServiceApp.UserService;
 using MicroServiceApp.UserService.Dto;
+using MicroServiceApp.UserService.Repositories;
 using MicroServiceApp.UserService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,8 @@ var configuration = builder.Configuration;
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddAuthentication("Bearer")
@@ -28,10 +31,10 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 builder.Services.AddSingleton<IConfiguration>(configuration);
-
 builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IServiceBusProcessor<UserRegisteredMessage>>(provider =>
 {
     var connectionString = configuration.GetConnectionString("AzureServiceBus");
