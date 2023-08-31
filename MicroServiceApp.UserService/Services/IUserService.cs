@@ -5,5 +5,7 @@ namespace MicroServiceApp.UserService.Services;
 public interface IUserService
 {
     Task RegisterUserAsync(UserDto message);
-    Task<UserDto> GetUserById(Guid id);
+    Task<UserDto> GetUserByIdAsync(Guid id);
+    Task<List<UserDto>> GetUsersAsync();
+    Task<UserDto> UpdateUserAsync(Guid id, UserUpdateDto userUpdateDto);
 }
