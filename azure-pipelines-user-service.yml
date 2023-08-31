@@ -1,0 +1,37 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  userServiceProjectPath: '**/MicroServiceApp.UserService/*.csproj'
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Install .NET Core SDK'
+  inputs:
+    packageType: 'sdk'
+    version: '6.x'
+  
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution : $(userServiceProjectPath)
+
+- task: DotNetCoreCLI@2
+  displayName: 'MicroServiceApp.UserService'
+  inputs:
+    command: 'pack'
+    configuration: $(configuration)
+    packagesToPack: $(userServiceProjectPath)
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish the package to artifacts directory'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
