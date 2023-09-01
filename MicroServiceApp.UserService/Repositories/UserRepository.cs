@@ -35,4 +35,10 @@ public class UserRepository : IUserRepository
         await _dbContext.SaveChangesAsync();
         return user;
     }
+    
+    public async Task DeleteUserAsync(User user)
+    {
+        _dbContext.Users.Remove(user);
+        await _dbContext.SaveChangesAsync();
+    }
 }

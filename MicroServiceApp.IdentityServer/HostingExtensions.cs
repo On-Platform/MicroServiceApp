@@ -1,7 +1,9 @@
 using System.Configuration;
+using AutoMapper;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Mappers;
 using MicroServiceApp.IdentityServer.Data;
+using MicroServiceApp.IdentityServer.Dto;
 using MicroServiceApp.IdentityServer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +62,12 @@ internal static class HostingExtensions
                     var queueName = configuration["AzureServiceBus:RegistrationQueue"];
                     return new AzureServiceBusMessageSender<UserRegisteredMessage>(azureServiceBusBusConnectionString, queueName);
                 });
+            builder.Services.AddSingleton<IServiceBusProcessor<UserDeletionMessage>>(provider =>
+            {
+                var azureServiceBusBusConnectionString = configuration.GetConnectionString("AzureServiceBus");
+                var queueName = configuration["AzureServiceBus:DeleteUserQueue"];
+                return new AzureServiceBusMessageHandler<UserDeletionMessage>(azureServiceBusBusConnectionString, queueName);
+            });
 
         return builder.Build();
     }
@@ -82,6 +90,16 @@ internal static class HostingExtensions
             
         app.UseIdentityServer();
         app.MapControllers();
+        
+        app.Services.GetService<IServiceBusProcessor<UserDeletionMessage>>()?.StartAsync(async (message) =>
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var userManager = scope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+                var user = await userManager?.FindByIdAsync(message.Id.ToString())!;
+                if (user != null) await userManager?.DeleteAsync(user)!;
+            }
+        });
 
         // uncomment if you want to add a UI
         //app.UseAuthorization();

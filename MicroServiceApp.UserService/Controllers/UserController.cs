@@ -22,7 +22,12 @@ public class UserController : ControllerBase
     [HttpGet(template: "api/users/{id}")]
     public async Task<IActionResult> GetUserById(Guid id)
     {
-        return Ok(await _userService.GetUserByIdAsync(id));
+        var user = await _userService.GetUserByIdAsync(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+        return Ok(user);
     }
     
     [HttpGet(template: "api/users")]
@@ -41,5 +46,18 @@ public class UserController : ControllerBase
             return NotFound();
         }
         return Ok(await _userService.UpdateUserAsync(id, userDto));
+    }
+    
+    //Delete User
+    [HttpDelete(template: "api/users/{id}")]
+    public async Task<IActionResult> DeleteUser(Guid id)
+    {
+        var user = await _userService.GetUserByIdAsync(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+        await _userService.DeleteUserAsync(id);
+        return NoContent();
     }
 }

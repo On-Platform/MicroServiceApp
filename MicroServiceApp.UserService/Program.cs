@@ -41,17 +41,23 @@ builder.Services.AddSingleton<IServiceBusProcessor<UserRegisteredMessage>>(provi
     var queueName = configuration["AzureServiceBus:RegistrationQueue"];
     return new AzureServiceBusMessageHandler<UserRegisteredMessage>(connectionString, queueName);
 });
+builder.Services.AddSingleton<IServiceBusSender<UserDeletionMessage>>(provider =>
+{
+    var azureServiceBusBusConnectionString = configuration.GetConnectionString("AzureServiceBus");
+    var queueName = configuration["AzureServiceBus:DeleteUserQueue"];
+    return new AzureServiceBusMessageSender<UserDeletionMessage>(azureServiceBusBusConnectionString, queueName);
+});
 
 var app = builder.Build();
 
-app.Services.GetService<IServiceBusProcessor<UserRegisteredMessage>>()?.StartAsync((user) =>
+app.Services.GetService<IServiceBusProcessor<UserRegisteredMessage>>()?.StartAsync(async (user) =>
 {
     using (var scope = app.Services.CreateScope())
     {
         var mapper = scope.ServiceProvider.GetService<IMapper>();
         var userService = scope.ServiceProvider.GetService<IUserService>();
         var userDto = mapper?.Map<UserDto>(user);
-        if (userDto != null) userService?.RegisterUserAsync(userDto);
+        if (userDto != null) await userService?.RegisterUserAsync(userDto)!;
     }
 });
 

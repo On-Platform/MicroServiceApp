@@ -11,6 +11,7 @@ public class MappingProfile : Profile
         CreateMap<User, UserDto>().ReverseMap();
         CreateMap<UserDto, UserRegisteredMessage>()
             .ReverseMap();
+        CreateMap<User, UserDeletionMessage>();
         
         CreateMap<User, User>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
