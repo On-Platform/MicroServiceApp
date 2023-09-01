@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace MicroServiceApp.IdentityServer;
 
 [ApiController]
-[Route("[controller]")]
 public class RegistrationController : ControllerBase
 {
     readonly IServiceBusSender<UserRegisteredMessage> _messageSender;
@@ -20,7 +19,7 @@ public class RegistrationController : ControllerBase
         _userManager = userManager;
     }
     
-    [HttpPost(Name = "AddUser")]
+    [HttpPost(template: "auth/register")]
     public async Task Add([FromBody] UserDto userDto)
     {
         var user = _mapper.Map<ApplicationUser>(userDto);
