@@ -28,6 +28,7 @@ public class RegistrationController : ControllerBase
         if(identityUser.Succeeded)
         {
             var message = _mapper.Map<UserRegisteredMessage>(userDto);
+            message.Id = user.Id;
             await _messageSender.SendAsync(message);
         }
         else
